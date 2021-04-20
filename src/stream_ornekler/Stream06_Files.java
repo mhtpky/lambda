@@ -1,14 +1,17 @@
 package stream_ornekler;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.stream.Stream;
 
 public class Stream06_Files {
     public static void main(String[] args) throws IOException {
+        // File islemleri yaparken Java 'ya dosyayi bulamazsam' diye hata verir.
+        // Bunun onune gecebilmek icin throws IOException eklememiz gerekir.
+
         Stream<String> satirlar = Files.lines(Path.of("src/stream_ornekler/mars.txt"));
         // Dosyamizi stream e cevirdik. (marsimiz string oldugu icin data type string olmali)
         satirlar.forEach(System.out::println);
@@ -16,17 +19,19 @@ public class Stream06_Files {
         System.out.println("=======================================");
         // satirlar.map(String :: toUpperCase).forEach(System.out::println);
         // Exception in thread "main" java.lang.IllegalStateException: stream has already been operated
+
         // Stream akan su gibi dusunmek lazm su akar gider ve giden su bir daha bulunamaz
         // Dolayisiyla 13. satirda for each koydugumuzda stream'i kullandik bitti
         // Artik ayni sekilde ona erisemeyiz icinde ki veriler Garbage Collector tarafindan silinms oldu
-        // Yeniden tanimlama yapmamiz gerekiyr
+        // Yeniden tanimlama yapmamiz gerekiyor
 
         // Her defasinda bu sekilde path almak ugrastiricidir.
         // Path'imizi bir string olarak tanimlayip  kullanabiliriz.
         // Genel kullanim bu sekildedir
         String path = "src/stream_ornekler/mars.txt";
-
         // dogrudan stream'i alip bu sekilde kullanabiliriz
+
+        // Files'in tum elemanlarini buyuk harfle yazdiralim
         Files.lines(Path.of(path)).
                 map(t->t.toUpperCase()).
                 forEach(System.out::println);
@@ -43,6 +48,7 @@ public class Stream06_Files {
         System.out.println("=======================================");
 
         // Sadece 3 ve 4. satirlari almak istiyoruz
+       //Files.lines(Path.of(path)).limit(4).skip(2).forEach(System.out::println);
         Files.lines(Path.of(path)).
                 skip(2).
                 limit(2).
@@ -51,7 +57,7 @@ public class Stream06_Files {
 
         System.out.println("=======================================");
 
-        // Bu kelimesi mars icinde kac adet geciyor bulalim
+        // "Bu" kelimesi(kucuk veya buyuk) mars icinde kac adet geciyor yazdiralim
         System.out.println(Files.lines(Path.of(path)).
                 map(t->t.toLowerCase()).
                 filter(t-> t.contains("bu")).count());
@@ -63,10 +69,13 @@ public class Stream06_Files {
         // uzerinde islem yapmak istiyoruz.
         // Kelimeleri boldugumuzde Nested gibi bir yapi olusur.
         // kelimeler satir elemanlarinin alt elemanlaridir.. Flatmap methodu
+
         Files.lines(Path.of(path)).
                 map(t->t.toLowerCase().split(" ")).
-                flatMap(Arrays::stream).// kelimelrden olusan tek bir liste olusturmus olduk
-                                        // tum elemanlar tren gibi siralandai ve duzlesti
+                flatMap(Arrays::stream).// parantez icine donusturmek istedigimiz turu yaziyoruz.
+                                        // Arrays classindan stream turune cevirmek istiyorum
+                                        // kelimelrden olusan tek bir liste olusturmus olduk
+                                        // tum elemanlar tren gibi siralandi ve duzlesti
                 distinct().
                 forEach(System.out::println);
 
@@ -84,6 +93,7 @@ public class Stream06_Files {
         // Boşluk ve noktalama işaretleri hariç dosyada kaç adet karakter kullanıldığını
         // hesaplayarak sonucu konsola yazdıran uygulamayı yazınız.
         //  \\W "a-z" & "A-Z" & "8-9" & "_" haric tum karakterler demektir
+
         System.out.println(Files.lines(Path.of(path)).
                 map(t->t.replace("_",""). // _ gorursek onu sil demis olduk
                         replaceAll("\\W","").split("")).
