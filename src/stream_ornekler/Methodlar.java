@@ -1,8 +1,8 @@
-package stream;
+package stream_ornekler;
 
 public class Methodlar {
     public static boolean ciftMi (int x){
-        return x%2==0;
+        return x % 2 == 0;
     }
     public static boolean tekMi(int x) {
         return x % 2 != 0;
